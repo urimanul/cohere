@@ -7,7 +7,7 @@ show_rag = True      # 引用ボタンの表示切り替え
 
 # 処理中のラベル
 if show_process:
-    st.markdown("<p style='text-align:center; font-size:24px;'>処理中...</p>", unsafe_allow_html=True)
+    st.markdown("<p style='text-align:center; font-size:24px;'>st.session_state['show_process']...</p>", unsafe_allow_html=True)
 
 # SelectBox
 my_data_source = [
@@ -28,7 +28,7 @@ rag_chain = st.text_area("プロンプトを入力して下さい", value="", he
 if st.button("生成"):
     rag_response = "生成結果の例"  # ここで生成した結果を変数に格納します
     st.session_state['rag_response'] = rag_response
-    show_process = False
+    st.session_state['show_process'] = False
 
 # 結果表示用のTextArea
 rag_response = st.text_area("結果", value=st.session_state.get('rag_response', ''), height=150, disabled=True)
