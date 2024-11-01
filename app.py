@@ -53,7 +53,7 @@ if st.button("生成"):
                 },
                 {
                     'role': 'user',
-                    'content': '以下の文章を分析してください。' + str(results_summary)
+                    'content': rag_chain
                 }
             ]
         }
