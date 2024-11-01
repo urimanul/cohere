@@ -7,7 +7,9 @@ show_rag = True      # 引用ボタンの表示切り替え
 
 # 処理中のラベル
 if show_process:
-    st.markdown("<p style='text-align:center; font-size:24px;'>st.session_state['show_process']...</p>", unsafe_allow_html=True)
+    st.markdown("<p style='text-align:center; font-size:24px;'>処理中...</p>", unsafe_allow_html=True)
+else:
+    st.markdown("<p style='text-align:center; font-size:24px;'></p>", unsafe_allow_html=True)
 
 # SelectBox
 my_data_source = [
