@@ -54,7 +54,7 @@ if st.button("生成"):
 
     # レスポンスの確認
     if response.status_code == 200:
-        st.text_area("結果", value=st.session_state.get('rag_response', ''), height=150, disabled=True)
+        st.text_area("結果", value="response", height=150, disabled=True)
     else:
         print("エラー:", response.status_code, response.text)
         
