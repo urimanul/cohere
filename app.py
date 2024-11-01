@@ -31,35 +31,38 @@ rag_chain = st.text_area("プロンプトを入力して下さい", value="", he
 
 # 生成ボタン
 if st.button("生成"):
-    # APIキーを設定
-    apikey = 'GqsxZlKmcBzSultkVOfKPf7kVhYkporXvivq9KHg'  # ここにAPIキーを入力
-
-    # URLとヘッダーの設定
-    url = 'https://api.cohere.com/v1/chat'
+    # Groq API設定
+    API_URL = 'https://api.groq.com/openai/v1/'
+    MODEL = 'Llama-3.1-70b-Versatile'
+    API_KEY = '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'
+    maxTokens = 4096
     headers = {
-        'Authorization': f'Bearer {apikey}',
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'Authorization': f'Bearer {API_KEY}'
     }
 
-    # POSTデータを設定
-    data = {
-        "model": "command-r-plus",
-        "message": rag_chain,  # chainPromptは事前に設定
-        "connectors": [{"id": "authryh-wfc54k"}, {"id": "o365schedule-e4baaa"}, {"id": "web-search"}]
-    }
-
-
-    # POSTリクエストを送信
-    response = requests.post(url, headers=headers, json=data)
-
-    # レスポンスの確認
-    if response.status_code == 200:
-        st.text_area("結果", value=str(response), height=150, disabled=True)
-    else:
-        print("エラー:", response.status_code, response.text)
+    # 分析ボタンの作成
+    if st.button('分析'):
+        data = {
+            'model': MODEL,
+            'max_tokens': maxTokens,
+            'messages': [
+                {
+                    'role': 'system',
+                    'content': '貴方は専門家です。できるだけわかりやすく答えてください。必ず、日本語で答えてください。'
+                },
+                {
+                    'role': 'user',
+                    'content': '以下の文章を分析してください。' + str(results_summary)
+                }
+            ]
+        }
+    
+    response = requests.post(f'{API_URL}chat/completions', headers=headers, json=data)
+    groqResp = response.json()['choices'][0]['message']['content']
         
     rag_response = "生成結果の例"  # ここで生成した結果を変数に格納します
-    st.session_state['rag_response'] = "seiko"
+    st.session_state['rag_response'] = groqResp
     st.session_state['show_process'] = False  # ボタンが押されたらshow_processをFalseに設定
 
 # 結果表示用のTextArea
