@@ -54,7 +54,7 @@ if st.button("生成"):
 
     # レスポンスの確認
     if response.status_code == 200:
-        print("成功:", response.json())
+        print("成功:", response)
     else:
         print("エラー:", response.status_code, response.text)
         
