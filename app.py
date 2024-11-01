@@ -1,4 +1,5 @@
 import streamlit as st
+import requests
 
 # 初期設定
 st.set_page_config(page_title="プロンプト生成", layout="centered")
@@ -30,8 +31,35 @@ rag_chain = st.text_area("プロンプトを入力して下さい", value="", he
 
 # 生成ボタン
 if st.button("生成"):
+    # APIキーを設定
+    apikey = 'GqsxZlKmcBzSultkVOfKPf7kVhYkporXvivq9KHg'  # ここにAPIキーを入力
+
+    # URLとヘッダーの設定
+    url = 'https://api.cohere.com/v1/chat'
+    headers = {
+        'Authorization': f'Bearer {apikey}',
+        'Content-Type': 'application/json'
+    }
+
+    # POSTデータを設定
+    data = {
+        "model": "command-r-plus",
+        "message": rag_chain,  # chainPromptは事前に設定
+        "connectors": [{"id": "authryh-wfc54k"}, {"id": "o365schedule-e4baaa"}, {"id": "web-search"}]
+    }
+
+
+    # POSTリクエストを送信
+    response = requests.post(url, headers=headers, json=data)
+
+    # レスポンスの確認
+    if response.status_code == 200:
+        print("成功:", response.json())
+    else:
+        print("エラー:", response.status_code, response.text)
+        
     rag_response = "生成結果の例"  # ここで生成した結果を変数に格納します
-    st.session_state['rag_response'] = rag_response
+    st.session_state['rag_response'] = response.json()
     st.session_state['show_process'] = False  # ボタンが押されたらshow_processをFalseに設定
 
 # 結果表示用のTextArea
