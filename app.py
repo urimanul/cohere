@@ -59,7 +59,7 @@ if st.button("生成"):
         print("エラー:", response.status_code, response.text)
         
     rag_response = "生成結果の例"  # ここで生成した結果を変数に格納します
-    st.session_state['rag_response'] = response.json()
+    st.session_state['rag_response'] = "seiko"
     st.session_state['show_process'] = False  # ボタンが押されたらshow_processをFalseに設定
 
 # 結果表示用のTextArea
