@@ -53,7 +53,7 @@ if st.button("生成"):
         st.session_state['rag_response'] = ""
 
     # プロンプト入力用のTextArea
-        rag_chain = st.text_area("プロンプトを入力して下さい", value="", height=150)
+    rag_chain = st.text_area("プロンプトを入力して下さい", value="", height=150)
 
     # ボタンを押したときにAPIリクエストを送信
     
