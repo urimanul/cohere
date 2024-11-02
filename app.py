@@ -37,39 +37,42 @@ rag_chain = st.text_area("プロンプトを入力して下さい", height=150, 
 
 
 
-if st.button("生成"):
-    # Groq API設定
-    API_URL = 'https://api.groq.com/openai/v1/'
-    MODEL = 'Llama-3.1-70b-Versatile'
-    API_KEY = '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'
-    maxTokens = 4096
-    headers = {
-        'Content-Type': 'application/json',
-        'Authorization': f'Bearer {API_KEY}'
-    }
+col1, col2, col3 = st.columns(3)
+with col2:
+    st.write(" ")  # 空白行を追加してボタンを下に配置
+    if st.button("生成"):
+        # Groq API設定
+        API_URL = 'https://api.groq.com/openai/v1/'
+        MODEL = 'Llama-3.1-70b-Versatile'
+        API_KEY = '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'
+        maxTokens = 4096
+        headers = {
+            'Content-Type': 'application/json',
+            'Authorization': f'Bearer {API_KEY}'
+        }
 
-    data = {
-        'model': MODEL,
-        'max_tokens': maxTokens,
-        'messages': [
-            {
-                'role': 'system',
-                'content': '貴方は専門家です。できるだけわかりやすく答えてください。必ず、日本語で答えてください。'
-            },
-            {
-                'role': 'user',
-                'content': rag_chain
-            }
-        ]
-    }
-        
-    # リクエストの送信
-    response = requests.post(f'{API_URL}chat/completions', headers=headers, json=data)
-    rag_response = response.json()['choices'][0]['message']['content']
-        
-    #rag_response = "生成結果の例"  # ここで生成した結果を変数に格納します
-    st.session_state['rag_response'] = rag_response
-    st.session_state['show_process'] = False  # ボタンが押されたらshow_processをFalseに設定
+        data = {
+            'model': MODEL,
+            'max_tokens': maxTokens,
+            'messages': [
+                {
+                    'role': 'system',
+                    'content': '貴方は専門家です。できるだけわかりやすく答えてください。必ず、日本語で答えてください。'
+                },
+                {
+                    'role': 'user',
+                    'content': rag_chain
+                }
+            ]
+        }
+
+        # リクエストの送信
+        response = requests.post(f'{API_URL}chat/completions', headers=headers, json=data)
+        rag_response = response.json()['choices'][0]['message']['content']
+
+        #rag_response = "生成結果の例"  # ここで生成した結果を変数に格納します
+        st.session_state['rag_response'] = rag_response
+        st.session_state['show_process'] = False  # ボタンが押されたらshow_processをFalseに設定
 
 # 結果表示用のTextArea
 st.text_area("結果", value=st.session_state.get('rag_response', ''), height=150, disabled=True)
