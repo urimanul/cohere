@@ -59,18 +59,18 @@ if st.button("生成"):
         }
     
     response = requests.post(f'{API_URL}chat/completions', headers=headers, json=data)
-    groqResp = response.json()['choices'][0]['message']['content']
+    rag_response = response.json()['choices'][0]['message']['content']
         
-    rag_response = "生成結果の例"  # ここで生成した結果を変数に格納します
-    st.session_state['rag_response'] = groqResp
+    #rag_response = "生成結果の例"  # ここで生成した結果を変数に格納します
+    st.session_state['rag_response'] = rag_response
     st.session_state['show_process'] = False  # ボタンが押されたらshow_processをFalseに設定
 
 # 結果表示用のTextArea
-rag_response = st.text_area("結果", value=st.session_state.get('rag_response', ''), height=150, disabled=True)
+st.text_area("結果", value=st.session_state.get('rag_response', ''), height=150, disabled=True)
 
 # 注意ラベル
 st.markdown("<p style='text-align:center; font-size:9px; color:darkslategray;'>回答は必ずしも正しいとは限りません。重要な情報は確認するようにしてください。</p>", unsafe_allow_html=True)
 
 # 引用ボタン
-if show_rag and st.button("引用"):
-    st.write("引用データの表示")  # ここに引用のデータを表示するコードを追加します
+#if show_rag and st.button("引用"):
+    #st.write("引用データの表示")  # ここに引用のデータを表示するコードを追加します
