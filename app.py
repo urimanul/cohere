@@ -51,8 +51,10 @@ if st.button("生成"):
     data = {
         'model': MODEL,
         'max_tokens': maxTokens,
-        'prompt': rag_chain,  # `messages`ではなく`prompt`を使用する場合が多い
-        'history': [{"message": rag_chain}],
+        'message': rag_chain,  # `messages`ではなく`prompt`を使用する場合が多い
+        'history': [
+            {"role": "user", "message": rag_chain}  # `role`と`message`を含む形式に変更
+        ],
     }
 
     # リクエストの送信
