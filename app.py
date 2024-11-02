@@ -31,8 +31,9 @@ selected_value = st.selectbox(
     on_change=update_rag_chain
 )
 
-# プロンプト入力用のTextArea
-rag_chain = st.text_area("プロンプトを入力して下さい", value=st.session_state.rag_chain, height=150, key="rag_chain")
+# プロンプト入力用のTextArea（valueを直接指定しない）
+rag_chain = st.text_area("プロンプトを入力して下さい", height=150, key="rag_chain")
+
 
 
 if st.button("生成"):
