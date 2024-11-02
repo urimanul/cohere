@@ -29,7 +29,6 @@ selected_value = st.selectbox(
 # プロンプト入力用のTextArea
 rag_chain = st.text_area("プロンプトを入力して下さい", value="", height=150)
 
-# 生成ボタン
 if st.button("生成"):
     # Groq API設定
     API_URL = 'https://api.groq.com/openai/v1/'
@@ -41,23 +40,22 @@ if st.button("生成"):
         'Authorization': f'Bearer {API_KEY}'
     }
 
-    # 分析ボタンの作成
-    if st.button('分析'):
-        data = {
-            'model': MODEL,
-            'max_tokens': maxTokens,
-            'messages': [
-                {
-                    'role': 'system',
-                    'content': '貴方は専門家です。できるだけわかりやすく答えてください。必ず、日本語で答えてください。'
-                },
-                {
-                    'role': 'user',
-                    'content': rag_chain
-                }
-            ]
-        }
-    
+    data = {
+        'model': MODEL,
+        'max_tokens': maxTokens,
+        'messages': [
+            {
+                'role': 'system',
+                'content': '貴方は専門家です。できるだけわかりやすく答えてください。必ず、日本語で答えてください。'
+            },
+            {
+                'role': 'user',
+                'content': rag_chain
+            }
+        ]
+    }
+        
+    # リクエストの送信
     response = requests.post(f'{API_URL}chat/completions', headers=headers, json=data)
     rag_response = response.json()['choices'][0]['message']['content']
         
