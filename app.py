@@ -37,38 +37,44 @@ rag_chain = st.text_area("プロンプトを入力して下さい", height=150, 
 
 
 if st.button("生成"):
-    # Groq API設定
-    API_URL = 'https://api.groq.com/openai/v1/'
-    MODEL = 'Llama-3.1-70b-Versatile'
-    API_KEY = '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'
+    # Cohere API設定
+    API_URL = 'https://api.cohere.com/v1/chat'
+    MODEL = 'command-r-plus'
+    API_KEY = 'GqsxZlKmcBzSultkVOfKPf7kVhYkporXvivq9KHg'  # APIキーを設定
     maxTokens = 4096
+    
     headers = {
         'Content-Type': 'application/json',
         'Authorization': f'Bearer {API_KEY}'
     }
 
+    # セッションステートの初期化
+    if 'rag_response' not in st.session_state:
+        st.session_state['rag_response'] = ""
+
+    # プロンプト入力用のTextArea
+        rag_chain = st.text_area("プロンプトを入力して下さい", value="", height=150)
+
+    # ボタンを押したときにAPIリクエストを送信
+    
+    # リクエストデータ
     data = {
         'model': MODEL,
         'max_tokens': maxTokens,
-        'messages': [
-            {
-                'role': 'system',
-                'content': '貴方は専門家です。できるだけわかりやすく答えてください。必ず、日本語で答えてください。'
-            },
-            {
-                'role': 'user',
-                'content': rag_chain
-            }
-        ]
+        'history': [
+            {"role": "user", "message": rag_chain}
+        ],
     }
-        
+
     # リクエストの送信
-    response = requests.post(f'{API_URL}chat/completions', headers=headers, json=data)
-    rag_response = response.json()['choices'][0]['message']['content']
-        
-    #rag_response = "生成結果の例"  # ここで生成した結果を変数に格納します
-    st.session_state['rag_response'] = rag_response
-    st.session_state['show_process'] = False  # ボタンが押されたらshow_processをFalseに設定
+    response = requests.post(API_URL, headers=headers, json=data)
+
+    # レスポンスの取得
+    if response.status_code == 200:
+        rag_response = response.json().get('data', [{}])[0].get('text', '')
+        st.session_state['rag_response'] = rag_response
+    else:
+        st.session_state['rag_response'] = f"Error: {response.status_code}, {response.text}"
 
 # 結果表示用のTextArea
 st.text_area("結果", value=st.session_state.get('rag_response', ''), height=150, disabled=True)
