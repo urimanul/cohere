@@ -38,7 +38,7 @@ rag_chain = st.text_area("プロンプトを入力して下さい", height=150, 
 
 if st.button("生成"):
     # Cohere API設定
-    API_URL = 'https://api.cohere.com/v1/chat'
+    API_URL = 'https://api.cohere.com/v1/chat'  # エンドポイントの修正
     MODEL = 'command-r-plus'
     API_KEY = 'GqsxZlKmcBzSultkVOfKPf7kVhYkporXvivq9KHg'
     maxTokens = 4096
@@ -47,20 +47,23 @@ if st.button("生成"):
         'Authorization': f'Bearer {API_KEY}'
     }
 
+    # リクエストデータ
     data = {
         'model': MODEL,
         'max_tokens': maxTokens,
-        'messages': rag_chain,
-        'connectors': [{"id": "authryh-wfc54k"},{"id": "o365schedule-e4baaa"},{"id": "web-search"}]
+        'prompt': rag_chain,  # `messages`ではなく`prompt`を使用する場合が多い
     }
-        
+
     # リクエストの送信
-    response = requests.post(f'{API_URL}/completions', headers=headers, json=data)
+    response = requests.post(API_URL, headers=headers, json=data)
+
     # レスポンスの取得
     if response.status_code == 200:
         rag_response = response.json().get('data', [{}])[0].get('text', '')
+        st.write(rag_response)  # またはst.write(rag_response)でStreamlitに出力
     else:
         rag_response = f"Error: {response.status_code}, {response.text}"
+        st.write(rag_response)
         
     #rag_response = "生成結果の例"  # ここで生成した結果を変数に格納します
     st.session_state['rag_response'] = rag_response
