@@ -52,6 +52,7 @@ if st.button("生成"):
         'model': MODEL,
         'max_tokens': maxTokens,
         'prompt': rag_chain,  # `messages`ではなく`prompt`を使用する場合が多い
+        'history': [{"message": rag_chain}],
     }
 
     # リクエストの送信
