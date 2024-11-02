@@ -56,7 +56,11 @@ if st.button("生成"):
         
     # リクエストの送信
     response = requests.post(f'{API_URL}chat/completions', headers=headers, json=data)
-    rag_response = response.json()['data']['text']
+    # レスポンスの取得
+    if response.status_code == 200:
+        rag_response = response.json().get('generations', [{}])[0].get('text', '')
+    else:
+        rag_response = f"Error: {response.status_code}, {response.text}"
         
     #rag_response = "生成結果の例"  # ここで生成した結果を変数に格納します
     st.session_state['rag_response'] = rag_response
