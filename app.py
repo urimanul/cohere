@@ -70,7 +70,6 @@ if st.button("生成"):
         
     #rag_response = "生成結果の例"  # ここで生成した結果を変数に格納します
     st.session_state['rag_response'] = rag_response
-    st.session_state['show_process'] = False  # ボタンが押されたらshow_processをFalseに設定
 
 # 結果表示用のTextArea
 st.text_area("結果", value=st.session_state.get('rag_response', ''), height=150, disabled=True)
