@@ -38,42 +38,43 @@ rag_chain = st.text_area("プロンプトを入力して下さい", height=150, 
 
 if st.button("生成"):
     # Cohere API設定
-API_URL = 'https://api.cohere.com/v1/chat'
-MODEL = 'command-r-plus'
-API_KEY = 'GqsxZlKmcBzSultkVOfKPf7kVhYkporXvivq9KHg'  # APIキーを設定
-maxTokens = 4096
-headers = {
-    'Content-Type': 'application/json',
-    'Authorization': f'Bearer {API_KEY}'
-}
-
-# セッションステートの初期化
-if 'rag_response' not in st.session_state:
-    st.session_state['rag_response'] = ""
-
-# プロンプト入力用のTextArea
-rag_chain = st.text_area("プロンプトを入力して下さい", value="", height=150)
-
-# ボタンを押したときにAPIリクエストを送信
-if st.button("生成"):
-    # リクエストデータ
-    data = {
-        'model': MODEL,
-        'max_tokens': maxTokens,
-        'history': [
-            {"role": "user", "message": rag_chain}
-        ],
+    API_URL = 'https://api.cohere.com/v1/chat'
+    MODEL = 'command-r-plus'
+    API_KEY = 'GqsxZlKmcBzSultkVOfKPf7kVhYkporXvivq9KHg'  # APIキーを設定
+    maxTokens = 4096
+    
+    headers = {
+        'Content-Type': 'application/json',
+        'Authorization': f'Bearer {API_KEY}'
     }
 
-    # リクエストの送信
-    response = requests.post(API_URL, headers=headers, json=data)
+    # セッションステートの初期化
+    if 'rag_response' not in st.session_state:
+        st.session_state['rag_response'] = ""
 
-    # レスポンスの取得
-    if response.status_code == 200:
-        rag_response = response.json().get('data', [{}])[0].get('text', '')
-        st.session_state['rag_response'] = rag_response
-    else:
-        st.session_state['rag_response'] = f"Error: {response.status_code}, {response.text}"
+    # プロンプト入力用のTextArea
+        rag_chain = st.text_area("プロンプトを入力して下さい", value="", height=150)
+
+    # ボタンを押したときにAPIリクエストを送信
+    if st.button("生成"):
+        # リクエストデータ
+        data = {
+            'model': MODEL,
+            'max_tokens': maxTokens,
+            'history': [
+                {"role": "user", "message": rag_chain}
+            ],
+        }
+
+        # リクエストの送信
+        response = requests.post(API_URL, headers=headers, json=data)
+
+        # レスポンスの取得
+        if response.status_code == 200:
+            rag_response = response.json().get('data', [{}])[0].get('text', '')
+            st.session_state['rag_response'] = rag_response
+        else:
+            st.session_state['rag_response'] = f"Error: {response.status_code}, {response.text}"
 
 # 結果表示用のTextArea
 st.text_area("結果", value=st.session_state['rag_response'], height=150, disabled=True)
