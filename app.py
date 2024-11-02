@@ -38,22 +38,30 @@ rag_chain = st.text_area("プロンプトを入力して下さい", height=150, 
 
 if st.button("生成"):
     # Cohere API設定
-    API_URL = 'https://api.cohere.com/v1/chat'  # エンドポイントの修正
-    MODEL = 'command-r-plus'
-    API_KEY = 'GqsxZlKmcBzSultkVOfKPf7kVhYkporXvivq9KHg'
-    maxTokens = 4096
-    headers = {
-        'Content-Type': 'application/json',
-        'Authorization': f'Bearer {API_KEY}'
-    }
+API_URL = 'https://api.cohere.com/v1/chat'
+MODEL = 'command-r-plus'
+API_KEY = 'GqsxZlKmcBzSultkVOfKPf7kVhYkporXvivq9KHg'  # APIキーを設定
+maxTokens = 4096
+headers = {
+    'Content-Type': 'application/json',
+    'Authorization': f'Bearer {API_KEY}'
+}
 
+# セッションステートの初期化
+if 'rag_response' not in st.session_state:
+    st.session_state['rag_response'] = ""
+
+# プロンプト入力用のTextArea
+rag_chain = st.text_area("プロンプトを入力して下さい", value="", height=150)
+
+# ボタンを押したときにAPIリクエストを送信
+if st.button("生成"):
     # リクエストデータ
     data = {
         'model': MODEL,
         'max_tokens': maxTokens,
-        'message': rag_chain,  # `messages`ではなく`prompt`を使用する場合が多い
         'history': [
-            {"role": "user", "message": rag_chain}  # `role`と`message`を含む形式に変更
+            {"role": "user", "message": rag_chain}
         ],
     }
 
@@ -63,16 +71,12 @@ if st.button("生成"):
     # レスポンスの取得
     if response.status_code == 200:
         rag_response = response.json().get('data', [{}])[0].get('text', '')
-        st.write(rag_response)  # またはst.write(rag_response)でStreamlitに出力
+        st.session_state['rag_response'] = rag_response
     else:
-        rag_response = f"Error: {response.status_code}, {response.text}"
-        st.write(rag_response)
-        
-    #rag_response = "生成結果の例"  # ここで生成した結果を変数に格納します
-    st.session_state['rag_response'] = rag_response
+        st.session_state['rag_response'] = f"Error: {response.status_code}, {response.text}"
 
 # 結果表示用のTextArea
-st.text_area("結果", value=st.session_state.get('rag_response', ''), height=150, disabled=True)
+st.text_area("結果", value=st.session_state['rag_response'], height=150, disabled=True)
 
 # 注意ラベル
 st.markdown("<p style='text-align:center; font-size:9px; color:darkslategray;'>回答は必ずしも正しいとは限りません。重要な情報は確認するようにしてください。</p>", unsafe_allow_html=True)
