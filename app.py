@@ -6,7 +6,7 @@ st.set_page_config(page_title="プロンプト生成", layout="centered")
 
 # SelectBox
 my_data_source = [
-    {"Name": "-- プロンプトの選択 --", "Value": ""},
+    {"Name": "-- プロンプトを選択して下さい --", "Value": ""},
     {"Name": "韓国の首都は", "Value": "韓国の首都は"},
     {"Name": "日本の首都は", "Value": "日本の首都は"},
     {"Name": "米国の首都は", "Value": "米国の首都は"},
