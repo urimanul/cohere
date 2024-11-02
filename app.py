@@ -55,7 +55,7 @@ if st.button("生成"):
     }
         
     # リクエストの送信
-    response = requests.post(f'{API_URL}chat/completions', headers=headers, json=data)
+    response = requests.post(f'{API_URL}/completions', headers=headers, json=data)
     # レスポンスの取得
     if response.status_code == 200:
         rag_response = response.json().get('data', [{}])[0].get('text', '')
