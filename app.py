@@ -56,25 +56,25 @@ if st.button("生成"):
         rag_chain = st.text_area("プロンプトを入力して下さい", value="", height=150)
 
     # ボタンを押したときにAPIリクエストを送信
-    if st.button("生成"):
-        # リクエストデータ
-        data = {
-            'model': MODEL,
-            'max_tokens': maxTokens,
-            'history': [
-                {"role": "user", "message": rag_chain}
-            ],
-        }
+    
+    # リクエストデータ
+    data = {
+        'model': MODEL,
+        'max_tokens': maxTokens,
+        'history': [
+            {"role": "user", "message": rag_chain}
+        ],
+    }
 
-        # リクエストの送信
-        response = requests.post(API_URL, headers=headers, json=data)
+    # リクエストの送信
+    response = requests.post(API_URL, headers=headers, json=data)
 
-        # レスポンスの取得
-        if response.status_code == 200:
-            rag_response = response.json().get('data', [{}])[0].get('text', '')
-            st.session_state['rag_response'] = rag_response
-        else:
-            st.session_state['rag_response'] = f"Error: {response.status_code}, {response.text}"
+    # レスポンスの取得
+    if response.status_code == 200:
+        rag_response = response.json().get('data', [{}])[0].get('text', '')
+        st.session_state['rag_response'] = rag_response
+    else:
+        st.session_state['rag_response'] = f"Error: {response.status_code}, {response.text}"
 
 # 結果表示用のTextArea
 st.text_area("結果", value=st.session_state['rag_response'], height=150, disabled=True)
