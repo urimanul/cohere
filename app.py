@@ -4,15 +4,11 @@ import requests
 # 初期設定
 st.set_page_config(page_title="プロンプト生成", layout="centered")
 
-# 処理中のラベル
-if st.session_state['show_process']:
-    st.markdown("<p style='text-align:center; font-size:24px;'>処理中...</p>", unsafe_allow_html=True)
-
 # SelectBox
 my_data_source = [
-    {"Name": "Option 1", "Value": 1},
-    {"Name": "Option 2", "Value": 2},
-    {"Name": "Option 3", "Value": 3},
+    {"Name": "韓国の首都は", "Value": "韓国の首都は"},
+    {"Name": "日本の首都は", "Value": "日本の首都は"},
+    {"Name": "米国の首都は", "Value": "米国の首都は"},
 ]
 selected_value = st.selectbox(
     label="選択",
@@ -20,16 +16,12 @@ selected_value = st.selectbox(
     index=0
 )
 
+st.session_state['rag_chain'] = selected_value
+
 # プロンプト入力用のTextArea
 rag_chain = st.text_area("プロンプトを入力して下さい", value="", height=150)
 
 if st.button("生成"):
-    # セッションステートでshow_processの初期値を設定
-    if 'show_process' not in st.session_state:
-        st.session_state['show_process'] = True  # 処理中表示の初期状態
-
-    #show_rag = True  # 引用ボタンの表示切り替え
-    
     # Groq API設定
     API_URL = 'https://api.groq.com/openai/v1/'
     MODEL = 'Llama-3.1-70b-Versatile'
