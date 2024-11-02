@@ -10,16 +10,30 @@ my_data_source = [
     {"Name": "日本の首都は", "Value": "日本の首都は"},
     {"Name": "米国の首都は", "Value": "米国の首都は"},
 ]
+
+# コールバック関数の定義
+def update_rag_chain():
+    selected_item = next(item for item in my_data_source if item["Name"] == st.session_state.selected_value)
+    st.session_state.rag_chain = selected_item["Value"]
+
+# セッションステートの初期化
+if 'rag_chain' not in st.session_state:
+    st.session_state.rag_chain = ""
+if 'selected_value' not in st.session_state:
+    st.session_state.selected_value = my_data_source[0]["Name"]
+
+# SelectBoxの作成
 selected_value = st.selectbox(
     label="選択",
     options=[item["Name"] for item in my_data_source],
-    index=0
+    index=0,
+    key='selected_value',
+    on_change=update_rag_chain
 )
 
-st.session_state['rag_chain'] = selected_value
-
 # プロンプト入力用のTextArea
-rag_chain = st.text_area("プロンプトを入力して下さい", value="", height=150)
+rag_chain = st.text_area("プロンプトを入力して下さい", value=st.session_state.rag_chain, height=150, key="rag_chain")
+
 
 if st.button("生成"):
     # Groq API設定
